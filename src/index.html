@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="eng" data-ng-app="page.viewer">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -10,13 +10,12 @@
     <link rel="stylesheet" href="styles/styles.css">
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-    <script src="./js/all.js">
-    </script>
+    <script src="./js/all.js"></script>
+
 </head>
 
 <body>
-    <div class="container">
-        <!--small header div -->
+    <div class="container" style="height: 100%">
         <div id="header" class="row">
             <div class="col-xs-4">
                 <img class="img-responsive" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Flag_of_Hawaii.svg/220px-Flag_of_Hawaii.svg.png">
@@ -26,20 +25,17 @@
             </div>
         </div>
         <hr>
-        <!--map div-->
         <div class="row">
-            <div id="map" class="xs-col-12">
-            </div>
+            <div class="col-xs-12" id="map"></div>
         </div>
-        <!--search div-->
         <div id="search">
         </div>
         <!--selected locations div-->
         <div id="places">
         </div>
     </div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhFORjkMlRDTcclQJgZEefm-_GPuTx_tE&callback=initMap">
-    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhFORjkMlRDTcclQJgZEefm-_GPuTx_tE&callback=initMap" async defer></script>
 </body>
 
 </html>

@@ -1,16 +1,22 @@
-#header img{
-	width:100px;
-	margin-top:10px;
-} 
-#header p {
-	margin-top:20px;
-	font-family: 'Lobster', cursive;
-	font-size: 20px;
+#header img {
+    width: 100px;
+    margin-top: 10px;
 }
+
+#header p {
+    margin-top: 20px;
+    font-family: 'Lobster', cursive;
+    font-size: 20px;
+}
+
 hr {
-	border:none;
-	height:2px;
-	background-color: black;
-	margin-top: 10px;
-	margin-bottom: 10px;
+    border: none;
+    height: 2px;
+    background-color: black;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#map {
+    min-height: 300px;
 }
