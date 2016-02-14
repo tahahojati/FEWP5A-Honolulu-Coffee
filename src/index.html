@@ -9,13 +9,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/styles.css">
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-    <script src="./js/all.js"></script>
-
 </head>
 
 <body>
-    <div class="container" style="height: 100%">
+    <div class="container">
         <div id="header" class="row">
             <div class="col-xs-4">
                 <img class="img-responsive" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Flag_of_Hawaii.svg/220px-Flag_of_Hawaii.svg.png">
@@ -28,13 +25,22 @@
         <div class="row">
             <div class="col-xs-12" id="map"></div>
         </div>
-        <div id="search">
+        <div class="row" id="search">
+            <div class="col-xs-12">
+                <input type="text">
+            </div>
         </div>
         <!--selected locations div-->
-        <div id="places">
+        <div class="row">
+            <div id="placesDiv" class="col-xs-12">
+                <ul id="placesList" data-bind="foreach: shops">
+                    <li data-bind="text: name"></li>
+                </ul>
+            </div>
         </div>
     </div>
-
+    <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+    <script src="./js/all.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhFORjkMlRDTcclQJgZEefm-_GPuTx_tE&callback=initMap" async defer></script>
 </body>
 
