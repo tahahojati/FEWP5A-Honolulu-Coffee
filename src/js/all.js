@@ -17,12 +17,13 @@ function AppViewModel() {
 			mythis.shops.removeAll();
 			var len = mythis.allshops.length;
 			for (var i = 0; i < len; ++i) {
-				if (mythis.allshops[i].name.search(mythis.searchTerm()) != -1) {
+				if (mythis.allshops[i].name.search(new RegExp(mythis.searchTerm(),"i")) != -1) {
 					console.log(mythis.allshops[i].name);
 					mythis.shops.push(mythis.allshops[i]);
-
-
+					markvisible(true,i);
 				}
+				else
+					markvisible(false,i);
 			}
 		};
 	};
@@ -52,7 +53,7 @@ ko.applyBindings(main);
 
 //GoogleMaps
 var map;
-
+var markers; 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {
@@ -61,7 +62,7 @@ function initMap() {
 		},
 		zoom: 12
 	});
-	var markers = [];
+	markers = [];
 	for (var i = 0; i < main.allshops.length; ++i) {
 		markers.push(new google.maps.Marker({
 			position: new google.maps.LatLng(main.allshops[i].latlng),
@@ -70,4 +71,7 @@ function initMap() {
 		}));
 	}
 
+}
+function markvisible(value, index){
+	markers[index].setVisible(value);
 }
