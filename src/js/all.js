@@ -22,27 +22,30 @@ function AppViewModel() {
 	];
 	this.shops = ko.observableArray(this.allshops);
 	this.dosearch = function() {
-		console.log("called");
-		console.log("hello" + this.searchTerm());
+		var mythis = this; 
+		return function() {
+			console.log("called");
+			console.log("hello" + mythis.searchTerm());
 
-		if (this.searchTerm() === "" ) {
+			if (mythis.searchTerm() === "") {
 
-			return this.allshops;
-		} else {
-			var r = [];
-			var len = this.allshops().length;
-			for (var i = 0; i < len; ++i) {
-				console.log(this.allshops()[i].name);
-				if (this.allshops()[i].name.search(this.searchTerm()) != -1)
-					r.push(this.allshops()[i]);
+				return mythis.allshops;
+			} else {
+				var r = [];
+				var len = mythis.allshops.length;
+				for (var i = 0; i < len; ++i) {
+					console.log(mythis.allshops[i].name);
+					if (mythis.allshops[i].name.search(mythis.searchTerm()) != -1)
+						r.push(mythis.allshops[i]);
+				}
 			}
-		}
+		};
 	};
-	this.dosearch2= function(){
-		document.getElementById('placesDiv').innerHTML='hello world'
-	}
+	this.dosearch2 = function() {
+			document.getElementById('placesDiv').innerHTML = 'hello world'
+		}
 		//console.log(this.dosearch2);
-		this.searchTerm.subscribe(this.dosearch);
+	this.searchTerm.subscribe(this.dosearch());
 
 }
 
