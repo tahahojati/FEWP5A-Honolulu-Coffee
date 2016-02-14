@@ -20,23 +20,20 @@ function AppViewModel() {
 		new CoffeePlace("Brue Bar", "119 Merchant St\nHonolulu, HI 96813", "dfa"),
 		new CoffeePlace("Insomnia", "669 Auahi St\nHonolulu, HI 96813", "dfa")
 	];
-	this.shops = ko.observableArray(this.allshops);
+	this.shops = ko.observableArray(this.allshops.slice());
 	this.dosearch = function() {
-		var mythis = this; 
+		var mythis = this;
 		return function() {
 			console.log("called");
 			console.log("hello" + mythis.searchTerm());
-
-			if (mythis.searchTerm() === "") {
-
-				return mythis.allshops;
-			} else {
-				var r = [];
-				var len = mythis.allshops.length;
-				for (var i = 0; i < len; ++i) {
+			mythis.shops.removeAll();
+			var len = mythis.allshops.length;
+			for (var i = 0; i < len; ++i) {
+				if (mythis.allshops[i].name.search(mythis.searchTerm()) != -1) {
 					console.log(mythis.allshops[i].name);
-					if (mythis.allshops[i].name.search(mythis.searchTerm()) != -1)
-						r.push(mythis.allshops[i]);
+					mythis.shops.push(mythis.allshops[i]);
+
+
 				}
 			}
 		};
