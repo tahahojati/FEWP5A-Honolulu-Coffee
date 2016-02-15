@@ -48,17 +48,17 @@ function CoffeePlace(fourSquareID) {
 	this.clousure = function() {
 		var mythis = this;
 		return function(data) {
-			console.log(data);
-			console.log(data.response.venue.name);
+			//console.log(data);
+			//console.log(data.response.venue.name);
 			mythis.name = data.response.venue.name;
 			mythis.latlng = {
 				lat: data.response.venue.location.lat,
 				lng: data.response.venue.location.lng
 			};
-			mythis.img = data.response.venue.bestPhoto.prefix +"width200"+ data.response.venue.bestPhoto.suffix ; 
-			mythis.rating = data.response.venue.rating; 
+			mythis.img = data.response.venue.bestPhoto.prefix + "width200" + data.response.venue.bestPhoto.suffix;
+			mythis.rating = data.response.venue.rating;
 			mythis.completedAJAX = true;
-			markers.push(new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%",mythis.name).replace("%img%",mythis.img).replace("%rating%", mythis.rating)));
+			markers.push(new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%", mythis.name).replace("%img%", mythis.img).replace("%rating%", mythis.rating)));
 		};
 	}
 	$.getJSON(FOURSQUAREVENUEENDPOINT + this.fourSquareID, {
@@ -79,6 +79,9 @@ function Model() {
 		new CoffeePlace("51bbbbb12fc61cb0b5bf190a"),
 		new CoffeePlace("4d13dff1816af04de34237c2")
 	];
+	this.size = function() {
+		return this.places.length;
+	}
 	this.populate = function(oArray) {
 		oArray.removeAll();
 		for (var i = 0; i < this.places.length; ++i) {
@@ -91,7 +94,7 @@ function Model() {
 			//	console.log("good");
 			oArray.push(mythis.places[index]);
 		} else {
-			console.log("bad");
+			//console.log("bad");
 			setTimeout(mythis.pushElement, 200, mythis, oArray, index);
 		}
 	}
@@ -102,23 +105,29 @@ var CoffeePlacesModel = new Model();
 function AppViewModel() {
 	this.searchTerm = ko.observable("");
 	this.shops = ko.observableArray();
+	this.visible = [];
 	CoffeePlacesModel.populate(this.shops);
+	for (var j = 0; j < CoffeePlacesModel.size(); ++j)
+		this.visible.push(ko.observable(true));
+	//console.log(this.visible[3])
 	this.dosearch = function() {
 		var mythis = this;
 		return function() {
-			var i =0, j=0 ; 
-			console.log("called");
-			console.log("value:  " + mythis.searchTerm());
-			CoffeePlacesModel.populate(mythis.shops);
+			var i = 0;
+			//console.log("called");
+			//console.log("value:  " + mythis.searchTerm());
+			//CoffeePlacesModel.populate(mythis.shops);
 			var len = mythis.shops().length;
 			for (i = 0; i < len; ++i) {
-				if (mythis.shops()[i-j].name.search(new RegExp(mythis.searchTerm(), "i")) == -1) {
-					console.log(mythis.shops()[i-j].name);
-					mythis.shops.splice(i-j, 1);
+				if (mythis.shops()[i].name.search(new RegExp(mythis.searchTerm(), "i")) == -1) {
+					//console.log(mythis.shops()[i].name);
+					mythis.visible[i](false);
+					//mythis.shops.splice(i, 1);
 					markvisible(false, i);
-					++j;
-				} else
+				} else {
+					mythis.visible[i](true);
 					markvisible(true, i);
+				}
 			}
 		};
 	};
