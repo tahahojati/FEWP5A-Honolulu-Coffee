@@ -29,9 +29,12 @@ gulp.task('lint', function() {
 gulp.task('css', function(){
     return gulp.src('./src/styles/*.css')
         .pipe(cssbeautify())
-        .pipe(gulp.dest('./src/styles/'));
-});
+        .pipe(gulp.dest('./src/styles/'))
+        .pipe(cssmin())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('dist/'));
 
+});
 /*// Compile Our Sass
 gulp.task('sass', function() {
     return gulp.src('src/scss/*.scss')
@@ -43,37 +46,27 @@ gulp.task('html', function() {
   gulp.src('./src/*.html')
     .pipe(prettify({indent_char: ' ', indent_size: 4}))
     .pipe(gulp.dest('./src/'))
+    .pipe(htmlmin({collapseWhitespace: true}))
+    .pipe(gulp.dest('dist/'));
 });
  
-gulp.task('cssmin', function () {
-    gulp.src('src/**/*.css')
-        .pipe(cssmin())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('minify', function() {
-  return gulp.src('src/*.html')
-    .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('dist/'))
-});
 // Concatenate & Minify JS
-/*gulp.task('scripts', function() {
-    return gulp.src('src/js/*.js')
+gulp.task('scripts', function() {
+    return gulp.src(['src/js/helper.js', 'src/js/model.js', 'src/js/viewmodel.js'])
         .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist'))
+        //.pipe(gulp.dest('dist/'))
         .pipe(rename('all.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist'));
-});*/
+        .pipe(gulp.dest('dist/'));
+});
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('src/js/*.js', ['lint']);
-    gulp.watch('src/**/*.css', ['css','cssmin']);
-    gulp.watch('src/*.html', ['html','minify']);
+    gulp.watch('src/js/*.js', ['lint', 'scripts']);
+    gulp.watch('src/**/*.css', ['css']);
+    gulp.watch('src/*.html', ['html']);
     //gulp.watch('src/scss/*.scss', ['sass']);
 });
 
 // Default Task
-gulp.task('default', ['lint','html','minify', 'css' , 'watch']);
+gulp.task('default', ['lint','html', 'scripts' , 'css' , 'watch']);

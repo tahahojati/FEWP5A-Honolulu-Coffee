@@ -1,6 +1,6 @@
 var FOURSQUAREID = "PEVDLWKZEUCSU1ULZMCKDV4SMRWDIBTJ0O0SA5PEDSEFHQA5";
 var FOURSQUARESECRET = "QZ3SKHECKEKEDL3I1RHYD2F00ZRDJKZ0Z4Z3BHAY45PMP55U";
-var FOURSQUAREVENUEENDPOINT = "https://api.foursquare.com/v2/venues/"
+var FOURSQUAREVENUEENDPOINT = "https://api.foursquare.com/v2/venues/";
 var infoFormat = '<div class="maps-note"><h4>%name%</h4><img class="img-responsive" src="%img%" alt="Best img from foursquare"><p>foursquare rating: %rating%</p> </div>';
 
 function CoffeePlace(fourSquareID) {
@@ -24,7 +24,7 @@ function CoffeePlace(fourSquareID) {
 			mythis.noteIndex = markers.length;
 			mythis.marker = new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%", mythis.name).replace("%img%", mythis.img).replace("%rating%", mythis.rating));
 		};
-	}
+	};
 	$.getJSON(FOURSQUAREVENUEENDPOINT + this.fourSquareID, {
 		client_id: FOURSQUAREID,
 		client_secret: FOURSQUARESECRET,
@@ -32,11 +32,12 @@ function CoffeePlace(fourSquareID) {
 		m: "swarm"
 	}, this.clousure());
 }
-CoffeePlace.prototype.markvisible = function(value, index) {
+CoffeePlace.prototype.markvisible = function(value) {
 	this.marker.googleMarker.setVisible(value);
 	if (value && !this.marker.markerVisible)
 		this.marker.googleMarker.setAnimation(google.maps.Animation.DROP);
-}
+	this.marker.markerVisible = value;
+};
 
 
 function Model() {
@@ -50,7 +51,7 @@ function Model() {
 	];
 	this.size = function() {
 		return this.places.length;
-	}
+	};
 	this.populate = function(oArray) {
 		oArray.removeAll();
 		for (var i = 0; i < this.places.length; ++i) {
@@ -66,6 +67,6 @@ function Model() {
 			//console.log("bad");
 			setTimeout(mythis.pushElement, 200, mythis, oArray, index);
 		}
-	}
+	};
 }
 var CoffeePlacesModel = new Model();

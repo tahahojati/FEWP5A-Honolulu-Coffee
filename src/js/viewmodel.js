@@ -19,10 +19,12 @@ function AppViewModel() {
 					//console.log(mythis.shops()[i].name);
 					mythis.visible[i](false);
 					//mythis.shops.splice(i, 1);
-					markvisible(false, i);
+					mythis.shops()[i].markvisible(false);
+					// mythis.shops()[i].marker.visible = false; 
 				} else {
 					mythis.visible[i](true);
-					markvisible(true, i);
+					// mythis.shops()[i].marker.setVisible(true);
+					mythis.shops()[i].markvisible(true);
 				}
 			}
 		};
