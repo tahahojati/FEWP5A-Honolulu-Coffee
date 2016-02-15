@@ -6,6 +6,8 @@ var infoFormat = '<div class="maps-note"><h4>%name%</h4><img class="img-responsi
 function CoffeePlace(fourSquareID) {
 	this.fourSquareID = fourSquareID;
 	this.completedAJAX = false;
+	this.marker = null;
+	this.noteIndex = 0;
 	this.clousure = function() {
 		var mythis = this;
 		return function(data) {
@@ -19,7 +21,8 @@ function CoffeePlace(fourSquareID) {
 			mythis.img = data.response.venue.bestPhoto.prefix + "width200" + data.response.venue.bestPhoto.suffix;
 			mythis.rating = data.response.venue.rating;
 			mythis.completedAJAX = true;
-			markers.push(new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%", mythis.name).replace("%img%", mythis.img).replace("%rating%", mythis.rating)));
+			mythis.noteIndex = markers.length;
+			mythis.marker = new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%", mythis.name).replace("%img%", mythis.img).replace("%rating%", mythis.rating));
 		};
 	}
 	$.getJSON(FOURSQUAREVENUEENDPOINT + this.fourSquareID, {
@@ -28,6 +31,11 @@ function CoffeePlace(fourSquareID) {
 		v: "20160101",
 		m: "swarm"
 	}, this.clousure());
+}
+CoffeePlace.prototype.markvisible = function(value, index) {
+	this.marker.googleMarker.setVisible(value);
+	if (value && !this.marker.markerVisible)
+		this.marker.googleMarker.setAnimation(google.maps.Animation.DROP);
 }
 
 

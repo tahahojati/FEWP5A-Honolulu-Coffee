@@ -34,7 +34,7 @@
         <div class="row">
             <div id="placesDiv" class="col-xs-12">
                 <ul id="placesList" data-bind="foreach: shops">
-                    <li data-bind="text: name, visible: main.visible[$index()]"></li>
+                    <li data-bind="text: name, click: marker.showNote , visible: main.visible[$index()]"></li>
                 </ul>
             </div>
         </div>
