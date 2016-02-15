@@ -42,13 +42,6 @@ function CoffeePlace(name, address, yelpID, mylat, mylon) {
 		lat: mylat,
 		lng: mylon
 	};
-	this.clousure = function() {
-		var mythis = this;
-		return function(data) {
-			console.log(data);
-		}
-	};
-	$.getJSON('https://api.yelp.com/v2/business/' + this.yelpID,{Consumer} ,this.clousure());
 }
 
 // Activates knockout.js
