@@ -1,7 +1,7 @@
 var FOURSQUAREID = "PEVDLWKZEUCSU1ULZMCKDV4SMRWDIBTJ0O0SA5PEDSEFHQA5";
 var FOURSQUARESECRET = "QZ3SKHECKEKEDL3I1RHYD2F00ZRDJKZ0Z4Z3BHAY45PMP55U";
 var FOURSQUAREVENUEENDPOINT = "https://api.foursquare.com/v2/venues/"
-var infoFormat = '<div class="maps-note"><h1>%name%</h1><img class="img-responsive" src="%img%" alt="Best img from foursquare"><p>foursquare rating: %rating%</p> </div>';
+var infoFormat = '<div class="maps-note"><h4>%name%</h4><img class="img-responsive" src="%img%" alt="Best img from foursquare"><p>foursquare rating: %rating%</p> </div>';
 
 var map;
 var markers;
@@ -10,6 +10,7 @@ function MarkerAndInfo(latlng, mymap, mytitle, infoString) {
 	this.googleMarker = new google.maps.Marker({
 		position: new google.maps.LatLng(latlng),
 		map: mymap,
+		animation: google.maps.Animation.DROP,
 		title: mytitle
 	});
 	this.infoWindow = new google.maps.InfoWindow({
@@ -38,7 +39,10 @@ function initMap() {
 }
 
 function markvisible(value, index) {
+	var pre = markers[index].googleMarker.getVisible()
 	markers[index].googleMarker.setVisible(value);
+	if(value && !pre)
+	markers[index].googleMarker.setAnimation(google.maps.Animation.DROP);
 }
 
 
