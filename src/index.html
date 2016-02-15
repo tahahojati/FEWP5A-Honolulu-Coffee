@@ -23,16 +23,10 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-xs-12" id="map"></div>
-        </div>
-        <div class="row" id="search">
-            <div class="col-xs-12">
+            <div class="col-sm-7" id="map"></div>
+            <div class="col-sm-4" id="search">
                 <input type="text" data-bind="textInput: searchTerm">
-            </div>
-        </div>
-        <!--selected locations div-->
-        <div class="row">
-            <div id="placesDiv" class="col-xs-12">
+                <!--selected locations div-->
                 <ul id="placesList" data-bind="foreach: shops">
                     <li data-bind="text: name, click: marker.showNote , visible: main.visible[$index()]"></li>
                 </ul>

@@ -19,7 +19,7 @@ function MarkerAndInfo(latlng, mymap, mytitle, infoString) {
 	})();*/
 	this.markerVisible = true; 
 	this.showNote = $.proxy(function() {
-		console.log(this.infoWindow);
+		//console.log(this.infoWindow);
 		this.infoWindow.open(map,this.googleMarker);
 	}, this);
 	this.googleMarker.addListener('click', this.showNote);

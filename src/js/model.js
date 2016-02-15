@@ -11,8 +11,6 @@ function CoffeePlace(fourSquareID) {
 	this.clousure = function() {
 		var mythis = this;
 		return function(data) {
-			//console.log(data);
-			//console.log(data.response.venue.name);
 			mythis.name = data.response.venue.name;
 			mythis.latlng = {
 				lat: data.response.venue.location.lat,
@@ -59,12 +57,9 @@ function Model() {
 		}
 	};
 	this.pushElement = function(mythis, oArray, index) {
-		//console.log("in push element")
 		if (mythis.places[index].completedAJAX) {
-			//	console.log("good");
 			oArray.push(mythis.places[index]);
 		} else {
-			//console.log("bad");
 			setTimeout(mythis.pushElement, 200, mythis, oArray, index);
 		}
 	};
