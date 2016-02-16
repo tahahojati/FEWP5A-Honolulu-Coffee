@@ -7,7 +7,7 @@ This is the code to list some of the best coffeeshops in Honolulu.  The location
 
 ## Usage:
 You can use the app in two ways: 
-1. visit the project's github [page](tahahojati.github.io/FEWP5A-Neighborhood)
+1. visit the project's github [page](https://tahahojati.github.io/FEWP5A-Neighborhood)
 2. clone the project and open `index.html` or `dist/index.html` in a browser. 
 
 ## Documentation
