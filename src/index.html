@@ -30,6 +30,7 @@
                 <ul id="placesList" data-bind="foreach: shops">
                     <li data-bind="text: name, click: marker.showNote , visible: main.visible[$index()]"></li>
                 </ul>
+                <p class="error" data-bind="visible: ajaxErrors">Sorry! some of the AJAX calls failed so the list above isn't all I meant to show you...</p>
             </div>
         </div>
     </div>

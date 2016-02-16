@@ -1,18 +1,20 @@
 /**@fileOverview  This file defines the app's viewmodel and instantiates it.
-* @author Taha Pourjalali
-*/
+ * @author Taha Pourjalali
+ */
 /**
 *@class defines the app's viewmodel.  Follows the disign patterns of knockout.js. 
+@property {ko.observable} ajaxErrors finds out if ajax failed or not.
 @property {ko.observable} searchTerm bind this to filter the shops.
 @property {ko.observableArray} shops an array of selected coffee shops.
 @property {ko.observable[]} visible elements in this array will be boolean observables indicating
  whether a shop should be visible or not (based on the <tt>searchTerm</tt> filter).  
 */
 function AppViewModel() {
+	this.ajaxErrors = ko.observable(false);
 	this.searchTerm = ko.observable("");
 	this.shops = ko.observableArray();
 	this.visible = [];
-	CoffeePlacesModel.populate(this.shops);
+	CoffeePlacesModel.populate(this.shops, this.ajaxErrors);
 	for (var j = 0; j < CoffeePlacesModel.size(); ++j)
 		this.visible.push(ko.observable(true));
 	/**Filter the list of venues shown on page based on the <tt>searchTerm</tt>. Interacts with

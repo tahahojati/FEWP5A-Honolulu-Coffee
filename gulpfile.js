@@ -11,6 +11,7 @@ var cssbeautify = require('gulp-cssbeautify');
 var prettify = require('gulp-html-prettify');
 var htmlmin = require('gulp-htmlmin');
 var cssmin = require('gulp-cssmin');
+var shell = require('gulp-shell');
 //var jsbeautify = require('gulp-prettify');
 // Lint Task
 gulp.task('lint', function() {
@@ -67,6 +68,8 @@ gulp.task('watch', function() {
     gulp.watch('src/*.html', ['html']);
     //gulp.watch('src/scss/*.scss', ['sass']);
 });
+
+gulp.task('documentation', shell.task(['./node_modules/.bin/jsdoc src/js/helper.js src/js/model.js src/js/viewmodel.js']));
 
 // Default Task
 gulp.task('default', ['lint','html', 'scripts' , 'css' , 'watch']);

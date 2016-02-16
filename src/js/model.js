@@ -19,7 +19,7 @@ var FOURSQUAREVENUEENDPOINT = "https://api.foursquare.com/v2/venues/";
 /**html template code for the pop up notes on the google map 
 @type {string} 
 @constant
- */ 
+ */
 var infoFormat = '<div class="maps-note"><h4>%name%</h4><img class="img-responsive" src="%img%" alt="Best img from foursquare"><p>foursquare rating: %rating%</p> </div>';
 
 /**@param {string} fourSquareID the FourSquare ID of the venue.  
@@ -53,7 +53,9 @@ function CoffeePlace(fourSquareID) {
 		client_secret: FOURSQUARESECRET,
 		v: "20160101",
 		m: "swarm"
-	}, this.fourSquareSuccess());
+	}, this.fourSquareSuccess()).fail($.proxy(function() {
+		this.completedAJAX= "error";
+	}, this));
 }
 /**@param {boolean} 
 This function is refered to by viewmodel to change the visibility of google maps marker for each venue. 
@@ -86,11 +88,12 @@ function Model() {
 	};
 	/** fills in the viewmodel's array with the venues. It makes sure that 
 	venue information are fully retrieved through AJAX before it passes them to viewmodel.
-	@param {ko.observableArray} oArray the array to populate*/
-	this.populate = function(oArray) {
+	@param {ko.observableArray} oArray the array to populate
+	@param {ko.observable} ajaxError this will be set to true if ajax fails.*/
+	this.populate = function(oArray, ajaxError) {
 		oArray.removeAll();
 		for (var i = 0; i < this.places.length; ++i) {
-			this.pushElement(this, oArray, i);
+			this.pushElement(this, oArray, i, 0, ajaxError);
 		}
 	};
 	/**
@@ -99,12 +102,22 @@ function Model() {
 	 you must pass context to be used instead of this. 
 	 @param {ko.observableArray} oArray array to push to.
 	 @param {int} index of venue in the {@link Model#places | places} array.
+	 @param {int} repeats number of times this function was already called for the same element
+	 will give up after around 8 seconds. 
+	 @param {ko.observable} ajaxError this will be set to true if ajax fails.
 	*/
-	this.pushElement = function(mythis, oArray, index) {
-		if (mythis.places[index].completedAJAX) {
+	this.pushElement = function(mythis, oArray, index, repeats,ajaxError) {
+		if(mythis.places[index].completedAJAX === "error"){
+			ajaxError(true);
+		}
+		else if (mythis.places[index].completedAJAX) {
 			oArray.push(mythis.places[index]);
-		} else {
-			setTimeout(mythis.pushElement, 200, mythis, oArray, index);
+		} else if (repeats < 30) {
+			++repeats; 
+			setTimeout(mythis.pushElement, 200, mythis, oArray, index, repeats, ajaxError);
+		}
+		else {
+			ajaxError(true);
 		}
 	};
 }

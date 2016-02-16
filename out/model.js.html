@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+@author Taha Pourjalali
+*/
+
+/**
+my FourSquare ID -- very unsafe!
+@type {string} 
+@constant
+*/
+var FOURSQUAREID = "PEVDLWKZEUCSU1ULZMCKDV4SMRWDIBTJ0O0SA5PEDSEFHQA5";
+/**my FourSquare secret -- very unsafe! 
+@type {string} 
+ @constant*/
+var FOURSQUARESECRET = "QZ3SKHECKEKEDL3I1RHYD2F00ZRDJKZ0Z4Z3BHAY45PMP55U";
+/**FourSquare AJAX address for venue queries
+@type {string} 
+@constant*/
+var FOURSQUAREVENUEENDPOINT = "https://api.foursquare.com/v2/venues/";
+/**html template code for the pop up notes on the google map 
+@type {string} 
+@constant
+ */
+var infoFormat = '&lt;div class="maps-note">&lt;h4>%name%&lt;/h4>&lt;img class="img-responsive" src="%img%" alt="Best img from foursquare">&lt;p>foursquare rating: %rating%&lt;/p> &lt;/div>';
+
+/**@param {string} fourSquareID the FourSquare ID of the venue.  
+@constructor
+@property {string} fourSquareID ID of the venue.
+@property {boolean} completedAJAX takes track of whether the venue information was recieved from fourSquare or not. 
+@property {MarkerAndInfo} marker a pointer to the map marker of the venue.
+@property {string} img url to an image of the venue.
+@property {double} rating FourSquare rating of the venue. */
+function CoffeePlace(fourSquareID) {
+	this.fourSquareID = fourSquareID;
+	this.completedAJAX = false;
+	this.marker = null;
+	/**@returns {function} success function for AJAX that updates the object properties*/
+	this.fourSquareSuccess = function() {
+		var mythis = this;
+		return function(data) {
+			mythis.name = data.response.venue.name;
+			mythis.latlng = {
+				lat: data.response.venue.location.lat,
+				lng: data.response.venue.location.lng
+			};
+			mythis.img = data.response.venue.bestPhoto.prefix + "width200" + data.response.venue.bestPhoto.suffix;
+			mythis.rating = data.response.venue.rating;
+			mythis.completedAJAX = true;
+			mythis.marker = new MarkerAndInfo(mythis.latlng, map, mythis.name, infoFormat.replace("%name%", mythis.name).replace("%img%", mythis.img).replace("%rating%", mythis.rating));
+		};
+	};
+	$.getJSON(FOURSQUAREVENUEENDPOINT + this.fourSquareID, {
+		client_id: FOURSQUAREID,
+		client_secret: FOURSQUARESECRET,
+		v: "20160101",
+		m: "swarm"
+	}, this.fourSquareSuccess()).fail($.proxy(function() {
+		this.completedAJAX= "error";
+	}, this));
+}
+/**@param {boolean} 
+This function is refered to by viewmodel to change the visibility of google maps marker for each venue. 
+*/
+CoffeePlace.prototype.markvisible = function(value) {
+	this.marker.googleMarker.setVisible(value);
+	if (value &amp;&amp; !this.marker.markerVisible)
+		this.marker.googleMarker.setAnimation(google.maps.Animation.DROP);
+	this.marker.markerVisible = value;
+};
+
+/**
+Model is a collection of {@link CoffeePlace | CoffeePlaces} along
+ with useful methods for interacting with the viewmodel
+ @constructor
+ @property {CoffeePlace[]} places array of {@link CoffeePlace}
+*/
+function Model() {
+	this.places = [
+		new CoffeePlace("539b9c22498e606f9b3b1f7a"),
+		new CoffeePlace("4b60e1ecf964a52095ff29e3"),
+		new CoffeePlace("4b7b7a54f964a520f9642fe3"),
+		new CoffeePlace("53758c1b11d20b26da933dac"),
+		new CoffeePlace("51bbbbb12fc61cb0b5bf190a"),
+		new CoffeePlace("4d13dff1816af04de34237c2")
+	];
+	/**@returns {int} returns the number of venues. */
+	this.size = function() {
+		return this.places.length;
+	};
+	/** fills in the viewmodel's array with the venues. It makes sure that 
+	venue information are fully retrieved through AJAX before it passes them to viewmodel.
+	@param {ko.observableArray} oArray the array to populate
+	@param {ko.observable} ajaxError this will be set to true if ajax fails.*/
+	this.populate = function(oArray, ajaxError) {
+		oArray.removeAll();
+		for (var i = 0; i &lt; this.places.length; ++i) {
+			this.pushElement(this, oArray, i, 0, ajaxError);
+		}
+	};
+	/**
+	function called by populate to add each venue to oArray. 
+	@param  {Model} context this function uses setTimeout to call itself so
+	 you must pass context to be used instead of this. 
+	 @param {ko.observableArray} oArray array to push to.
+	 @param {int} index of venue in the {@link Model#places | places} array.
+	 @param {int} repeats number of times this function was already called for the same element
+	 will give up after around 8 seconds. 
+	 @param {ko.observable} ajaxError this will be set to true if ajax fails.
+	*/
+	this.pushElement = function(mythis, oArray, index, repeats,ajaxError) {
+		if(mythis.places[index].completedAJAX === "error"){
+			ajaxError(true);
+		}
+		else if (mythis.places[index].completedAJAX) {
+			oArray.push(mythis.places[index]);
+		} else if (repeats &lt; 30) {
+			++repeats; 
+			setTimeout(mythis.pushElement, 200, mythis, oArray, index, repeats, ajaxError);
+		}
+		else {
+			ajaxError(true);
+		}
+	};
+}
+/** global model variable used in view and model view. 
+@type {Model}
+*/
+var CoffeePlacesModel = new Model();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AppViewModel.html">AppViewModel</a></li><li><a href="CoffeePlace.html">CoffeePlace</a></li><li><a href="MarkerAndInfo.html">MarkerAndInfo</a></li><li><a href="Model.html">Model</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CoffeePlacesModel">CoffeePlacesModel</a></li><li><a href="global.html#FOURSQUAREID">FOURSQUAREID</a></li><li><a href="global.html#FOURSQUARESECRET">FOURSQUARESECRET</a></li><li><a href="global.html#FOURSQUAREVENUEENDPOINT">FOURSQUAREVENUEENDPOINT</a></li><li><a href="global.html#infoFormat">infoFormat</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#map">map</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Feb 15 2016 20:03:18 GMT-1000 (HST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
