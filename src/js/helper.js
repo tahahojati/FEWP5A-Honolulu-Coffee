@@ -1,4 +1,17 @@
+/**global googlemap vairable
+@type {google.maps.Map}*/
 var map;
+
+/** Helper class for handling the markers on google map.
+@constructor
+@param {google.maps.LatLng} latlng position of the marker
+@param {google.maps.Map} mymap map to display marker on
+@param {string} title the name of the marker
+@param {string} infoHTML what to show on the info pop up window
+@property {google.maps.Marker} googleMarker a marker
+@property {google.maps.InfoWindow} window to show when marker is clicked
+@property {google.maps.Animation} animation drop animation for marker.
+*/
 function MarkerAndInfo(latlng, mymap, mytitle, infoString) {
 	this.googleMarker = new google.maps.Marker({
 		position: new google.maps.LatLng(latlng),
@@ -10,16 +23,9 @@ function MarkerAndInfo(latlng, mymap, mytitle, infoString) {
 		content: infoString,
 		//maxWidth: 200
 	});
-	/*this.showNote = (function() {
-		var mythis = this;
-		return function() {
-			console.log(mythis.infoWindow);
-			mythis.infoWindow.open(map, mythis.googleMarker);
-		}
-	})();*/
-	this.markerVisible = true; 
+	/**function that displays the info window of the marker 
+	@method*/
 	this.showNote = $.proxy(function() {
-		//console.log(this.infoWindow);
 		this.infoWindow.open(map,this.googleMarker);
 	}, this);
 	this.googleMarker.addListener('click', this.showNote);
