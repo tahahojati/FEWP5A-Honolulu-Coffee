@@ -2,12 +2,12 @@ html, body {
     height: 100%;
 }
 
-#header img {
+header img {
     width: 100px;
     margin-top: 10px;
 }
 
-#header p {
+header p {
     margin-top: 20px;
     font-family: 'Lobster', cursive;
     font-size: 20px;

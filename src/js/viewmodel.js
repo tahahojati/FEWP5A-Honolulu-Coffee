@@ -21,7 +21,7 @@ function AppViewModel() {
 	 view through changing {@link AppViewModel#visible|visible} array.  
 	@returns {function} clousure that does the work
 	*/
-	this.dosearch = function() {
+	this.doSearch = function() {
 		var mythis = this;
 		return function() {
 			var i = 0;
@@ -38,7 +38,7 @@ function AppViewModel() {
 		};
 	};
 	/** call dosearch whenever {@link searchTerm} changes */
-	this.searchTerm.subscribe(this.dosearch());
+	this.searchTerm.subscribe(this.doSearch());
 }
 /**This is the global knockout viewmodel variable used to connect model to view
 @type {AppViewModel}*/

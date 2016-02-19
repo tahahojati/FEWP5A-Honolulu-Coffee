@@ -1,6 +1,16 @@
 /**global googlemap vairable
 @type {google.maps.Map}*/
 var map;
+var googleError;
+var infoWindow = null;
+
+function mapsError() {
+	var child = document.createElement("h2");
+	child.appendChild(document.createTextNode("Sorry! request to google maps failed :("));
+	child.style.color = 'red';
+	document.getElementById("map").appendChild(child);
+	googleError = true;
+}
 
 /** Helper class for handling the markers on google map.
 @constructor
@@ -13,22 +23,29 @@ var map;
 @property {google.maps.Animation} animation drop animation for marker.
 */
 function MarkerAndInfo(latlng, mymap, mytitle, infoString) {
-	this.googleMarker = new google.maps.Marker({
-		position: new google.maps.LatLng(latlng),
-		map: mymap,
-		animation: google.maps.Animation.DROP,
-		title: mytitle
-	});
-	this.infoWindow = new google.maps.InfoWindow({
-		content: infoString,
-		//maxWidth: 200
-	});
-	/**function that displays the info window of the marker 
-	@method*/
-	this.showNote = $.proxy(function() {
-		this.infoWindow.open(map,this.googleMarker);
-	}, this);
-	this.googleMarker.addListener('click', this.showNote);
+	if (!googleError) {
+		if (infoWindow === null)
+			infoWindow = new google.maps.InfoWindow();
+		this.googleMarker = new google.maps.Marker({
+			position: new google.maps.LatLng(latlng),
+			map: mymap,
+			animation: google.maps.Animation.DROP,
+			title: mytitle
+		});
+		this.infoContent = infoString;
+		/**function that displays the info window of the marker 
+		@method*/
+		this.clicked = $.proxy(function() {
+			infoWindow.setContent(this.infoContent);
+			//maxWidth: 200
+			this.googleMarker.setAnimation(google.maps.Animation.BOUNCE);
+			window.setTimeout(function(mythis) {
+				mythis.googleMarker.setAnimation(null);
+			}, 1500, this);
+			infoWindow.open(map, this.googleMarker);
+		}, this);
+		this.googleMarker.addListener('click', this.clicked);
+	}
 }
 
 function initMap() {
@@ -41,4 +58,3 @@ function initMap() {
 	});
 	markers = [];
 }
-
