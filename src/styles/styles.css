@@ -71,6 +71,10 @@ hr {
     .container {
         width: 100%;
     }
+
+    #placesList li {
+        float: none;
+    }
 }
 
 #search input {

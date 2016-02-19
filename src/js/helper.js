@@ -5,10 +5,11 @@ var googleError;
 var infoWindow = null;
 
 function mapsError() {
-	var child = document.createElement("h2");
-	child.appendChild(document.createTextNode("Sorry! request to google maps failed :("));
-	child.style.color = 'red';
-	document.getElementById("map").appendChild(child);
+	//var child = document.createElement("h2");
+	// child.appendChild(document.createTextNode("Sorry! request to google maps failed :("));
+	// child.style.color = 'red';
+	// document.getElementById("map").appendChild(child);
+	window.alert("Sorry! request to google maps failed :(");
 	googleError = true;
 }
 
